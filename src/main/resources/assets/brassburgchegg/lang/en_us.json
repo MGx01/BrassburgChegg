@@ -1,7 +1,7 @@
 {
   "itemGroup.brassburgchegg": "Example Mod Tab",
   "block.brassburgchegg.example_block": "Example Block",
-  "item.brassburgchegg.example_item": "Example Item",
+  "item.brassburgchegg.cheggdeck": "Chegg Deck",
 
   "brassburgchegg.configuration.title": "BrassburgChegg Configs",
   "brassburgchegg.configuration.section.brassburgchegg.common.toml": "BrassburgChegg Configs",
