@@ -1,0 +1,13 @@
+{
+  "itemGroup.brassburgchegg": "Example Mod Tab",
+  "block.brassburgchegg.example_block": "Example Block",
+  "item.brassburgchegg.example_item": "Example Item",
+
+  "brassburgchegg.configuration.title": "BrassburgChegg Configs",
+  "brassburgchegg.configuration.section.brassburgchegg.common.toml": "BrassburgChegg Configs",
+  "brassburgchegg.configuration.section.brassburgchegg.common.toml.title": "BrassburgChegg Configs",
+  "brassburgchegg.configuration.items": "Item List",
+  "brassburgchegg.configuration.logDirtBlock": "Log Dirt Block",
+  "brassburgchegg.configuration.magicNumberIntroduction": "Magic Number Text",
+  "brassburgchegg.configuration.magicNumber": "Magic Number"
+}
