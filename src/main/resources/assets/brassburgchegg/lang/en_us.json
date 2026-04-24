@@ -2,6 +2,8 @@
   "itemGroup.brassburgchegg": "Example Mod Tab",
   "block.brassburgchegg.deckbox": "Deck Box",
   "item.brassburgchegg.cheggdeck": "Chegg Deck",
+  "item.brassburgchegg.cheggdeckcase": "Chegg Deck Case",
+  "creativetab.brassburgchegg.chegg_items": "Chegg Items",
 
   "brassburgchegg.configuration.title": "BrassburgChegg Configs",
   "brassburgchegg.configuration.section.brassburgchegg.common.toml": "BrassburgChegg Configs",

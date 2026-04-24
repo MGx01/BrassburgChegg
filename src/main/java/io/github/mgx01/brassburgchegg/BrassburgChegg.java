@@ -1,8 +1,8 @@
 package io.github.mgx01.brassburgchegg;
 
 import io.github.mgx01.brassburgchegg.Blocks.ModBlocks;
+import io.github.mgx01.brassburgchegg.items.ModCreativeModeTabs;
 import io.github.mgx01.brassburgchegg.items.ModItems;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import org.slf4j.Logger;
 
@@ -32,7 +32,7 @@ public class BrassburgChegg {
         ModItems.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         //ModBlockEntities.register(modEventBus);
-
+        ModCreativeModeTabs.register(modEventBus);
         modEventBus.addListener(this::addCreative);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -42,13 +42,16 @@ public class BrassburgChegg {
 
     }
 
-    // Add the example block item to the building blocks tab
+    // Add the example block item to the building Blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItems.CHEGG_DECK);
         }
+        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(ModItems.CHEGG_DECK_CASE);
+        }
         if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(ModItems.DECK_BOX_ITEM);
+            event.accept(ModBlocks.DECK_BOX);
         }
     }
 
