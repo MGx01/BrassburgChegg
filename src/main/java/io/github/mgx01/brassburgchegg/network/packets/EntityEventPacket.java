@@ -1,7 +1,7 @@
-package io.github.mgx01.brassburgchegg.packets;
+package io.github.mgx01.brassburgchegg.network.packets;
 
 import io.github.mgx01.brassburgchegg.BrassburgChegg;
-import io.github.mgx01.brassburgchegg.network.IClientEventEntity;
+import io.github.mgx01.brassburgchegg.util.IClientEventEntity;
 import io.github.mgx01.brassburgchegg.util.MinecraftInstanceHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;

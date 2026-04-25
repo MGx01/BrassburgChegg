@@ -1,6 +1,6 @@
-package io.github.mgx01.brassburgchegg.network;
+package io.github.mgx01.brassburgchegg.util;
 
-import io.github.mgx01.brassburgchegg.packets.EntityEventPacket;
+import io.github.mgx01.brassburgchegg.network.packets.EntityEventPacket;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.PacketDistributor;
 

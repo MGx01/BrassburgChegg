@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.network;
+package io.github.mgx01.brassburgchegg.util;
 
 import net.minecraft.network.FriendlyByteBuf;
 
