@@ -7,7 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent; // The New 1.21 Event!
 
-//@EventBusSubscriber(modid = "brassburgchegg", value = Dist.CLIENT)
+@EventBusSubscriber(modid = "brassburgchegg", value = Dist.CLIENT)
 public class ModScreens {
 
     @SubscribeEvent

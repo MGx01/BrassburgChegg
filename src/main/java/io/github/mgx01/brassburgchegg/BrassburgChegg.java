@@ -3,6 +3,7 @@ package io.github.mgx01.brassburgchegg;
 import io.github.mgx01.brassburgchegg.Blocks.ModBlocks;
 import io.github.mgx01.brassburgchegg.items.ModCreativeModeTabs;
 import io.github.mgx01.brassburgchegg.items.ModItems;
+import io.github.mgx01.brassburgchegg.menus.ModMenus;
 import net.minecraft.world.item.CreativeModeTabs;
 import org.slf4j.Logger;
 
@@ -34,6 +35,7 @@ public class BrassburgChegg {
         //ModBlockEntities.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
         modEventBus.addListener(this::addCreative);
+        ModMenus.MENUS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
