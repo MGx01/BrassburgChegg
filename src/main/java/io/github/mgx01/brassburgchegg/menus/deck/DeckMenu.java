@@ -23,16 +23,16 @@ public class DeckMenu extends AbstractContainerMenu {
         super(ModMenus.DECK_MENU.get(), containerId);
         this.deckCounts = deckCounts;
         this.deckItem = deckItem;
-
-        // We only add the player inventory IF you want them to see their normal inventory
-        // while looking at the deck. If not, don't even add these!
-        addPlayerHotbar(playerInv);
     }
 
     public Map<String, Byte> getDeckCounts() {
         return this.deckCounts;
     }
 
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY;
+    }
 
     @Override
     public boolean stillValid(Player player) {
