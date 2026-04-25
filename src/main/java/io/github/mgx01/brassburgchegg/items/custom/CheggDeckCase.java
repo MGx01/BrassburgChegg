@@ -27,10 +27,8 @@ public class CheggDeckCase extends Item {
 
         if (!level.isClientSide()) {
             if (player instanceof ServerPlayer serverPlayer) {
-                // 1. Create the container (RAM)
                 SimpleContainer container = new SimpleContainer(9);
 
-                // 2. LOAD data from the Item (Hard Drive) into the container
                 ItemContainerContents contents = itemInHand.get(DataComponents.CONTAINER);
                 if (contents != null) {
                     for (int i = 0; i < Math.min(container.getContainerSize(),contents.getSlots()); i++) {
@@ -38,13 +36,11 @@ public class CheggDeckCase extends Item {
                     }
                 }
 
-                // 3. Open the Menu
                 serverPlayer.openMenu(new SimpleMenuProvider(
                         (containerId, playerInventory, p) -> new ChestMenu(MenuType.GENERIC_9x1, containerId, playerInventory, container, 1),
                         itemInHand.getHoverName()
                 ));
 
-                // 4. THE SAVE LOGIC: Listen for when the container changes
                 container.addListener(c -> {
                     NonNullList<ItemStack> currentStacks = NonNullList.withSize(c.getContainerSize(), ItemStack.EMPTY);
                     for (int i = 0; i < c.getContainerSize(); i++) {
