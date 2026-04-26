@@ -1,7 +1,9 @@
 package io.github.mgx01.brassburgchegg.impl.items.custom;
 
+import io.github.mgx01.brassburgchegg.impl.gui.deck.DeckMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,40 +17,31 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 
+import java.util.HashMap;
+
 public class CheggDeckCase extends Item {
+
     public CheggDeckCase(Properties properties) {
         super(properties);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemInHand = player.getItemInHand(hand);
+        ItemStack stack = player.getItemInHand(hand);
 
         if (!level.isClientSide()) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                SimpleContainer container = new SimpleContainer(9);
 
-                ItemContainerContents contents = itemInHand.get(DataComponents.CONTAINER);
-                if (contents != null) {
-                    for (int i = 0; i < Math.min(container.getContainerSize(),contents.getSlots()); i++) {
-                        container.setItem(i, contents.getStackInSlot(i));
-                    }
-                }
+            var deckCounts = new HashMap<String, Byte>();
 
-                serverPlayer.openMenu(new SimpleMenuProvider(
-                        (containerId, playerInventory, p) -> new ChestMenu(MenuType.GENERIC_9x1, containerId, playerInventory, container, 1),
-                        itemInHand.getHoverName()
-                ));
-
-                container.addListener(c -> {
-                    NonNullList<ItemStack> currentStacks = NonNullList.withSize(c.getContainerSize(), ItemStack.EMPTY);
-                    for (int i = 0; i < c.getContainerSize(); i++) {
-                        currentStacks.set(i, c.getItem(i));
-                    }
-                    itemInHand.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(currentStacks));
-                });
-            }
+            // SERVER REQUIREMENT
+            player.openMenu(new SimpleMenuProvider(
+                    (containerId, playerInventory, playerEntity) ->
+                            new DeckMenu(containerId, playerInventory, deckCounts, stack),
+                    Component.translatable("gui.brassburgchegg.deck_title")
+            ));
         }
-        return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
+
+        // Tell the game the right-click was successful and to trigger the arm-swing animation
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 }

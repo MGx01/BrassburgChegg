@@ -1,5 +1,6 @@
 package io.github.mgx01.brassburgchegg.impl.registry; // Adjust if your package name is slightly different
 
+import io.github.mgx01.brassburgchegg.api.gui.BaseCustomMenu;
 import io.github.mgx01.brassburgchegg.impl.gui.deck.DeckMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
