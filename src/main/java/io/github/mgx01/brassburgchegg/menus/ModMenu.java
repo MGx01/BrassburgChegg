@@ -7,14 +7,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class ModMenus {
-
-    // 1. Create the Registry for Menus
+public class ModMenu {
+    // REGISTER FOR MENUS
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(Registries.MENU, "brassburgchegg");
 
-    // 2. Register the Deck Menu
-    // We tell it to use the "Dummy" Client constructor: (containerId, playerInv) -> new DeckMenu(...)
+    // REGISTER FOR DECK MENU
     public static final DeferredHolder<MenuType<?>, MenuType<DeckMenu>> DECK_MENU =
             MENUS.register("deck_menu", () -> new MenuType<>(DeckMenu::new, FeatureFlags.DEFAULT_FLAGS));
 

@@ -1,6 +1,6 @@
 package io.github.mgx01.brassburgchegg.gui; // Matches your directory structure
 
-import io.github.mgx01.brassburgchegg.menus.ModMenus;
+import io.github.mgx01.brassburgchegg.menus.ModMenu;
 import io.github.mgx01.brassburgchegg.gui.deck.DeckScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,6 +12,6 @@ public class ModScreens {
 
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(ModMenus.DECK_MENU.get(), DeckScreen::new);
+        event.register(ModMenu.DECK_MENU.get(), DeckScreen::new);
     }
 }

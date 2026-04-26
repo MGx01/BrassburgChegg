@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DeckScreen extends AbstractContainerScreen<DeckMenu> {
 
-    // THE CONSTRUCTOR
+    // CONSTRUCTOR
     public DeckScreen(DeckMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
     }
@@ -16,9 +16,7 @@ public class DeckScreen extends AbstractContainerScreen<DeckMenu> {
     // REQUIRED RENDERING METHODS
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
