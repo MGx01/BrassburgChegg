@@ -1,134 +1,131 @@
 package io.github.mgx01.brassburgchegg.impl.gui.deck;
 
 import io.github.mgx01.brassburgchegg.api.gui.BaseCustomScreen;
-import io.github.mgx01.brassburgchegg.api.gui.widgets.ClickableTextureWidget;
-import io.github.mgx01.brassburgchegg.api.gui.widgets.PlusNumMinusBarWidget;
+import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
+import io.github.mgx01.brassburgchegg.api.gui.managers.DeckCardManager;
+import io.github.mgx01.brassburgchegg.api.gui.managers.DeckRuleManager;
+import io.github.mgx01.brassburgchegg.api.gui.managers.WidgetSelectionManager;
+import io.github.mgx01.brassburgchegg.api.gui.util.*;
+import io.github.mgx01.brassburgchegg.api.gui.widgets.*;
+import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DeckScreen extends BaseCustomScreen<DeckMenu> {
-    private static final ResourceLocation DECK_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(BrassburgChegg.MOD_ID, "textures/gui/deck_background_19_slots_with_widgets.png");
 
-    private static final int BACKGROUND_TEXTURE_WIDTH = 336;
-    private static final int BACKGROUND_TEXTURE_HEIGHT = 256;
-    private static final int BACKGROUND_ATLAS_WIDTH = 336;
-    private static final int BACKGROUND_ATLAS_HEIGHT = 256;
-    private String selectedEntity = "";
-
-    //LIST OF 29x29 CARD ICONS
-    private static final List<ResourceLocation> CARD_ICONS = List.of(
-            ResourceLocation.fromNamespaceAndPath(BrassburgChegg.MOD_ID, "textures/gui/cards/zombie.png")
+    // --- TEXTURE & STYLE ---
+    private static final TextureSettings DECK_BG = TextureSettings.of(
+            ResourceLocation.fromNamespaceAndPath(BrassburgChegg.MOD_ID, "textures/gui/deck_background.png"),
+            336, 256
     );
+    private static final TitleSettings DECK_TITLE = new TitleSettings(true, "Chegg Deck Menu", CheggColors.WHITE, 10);
 
-    //TEMPORARY PLACE FOR ENTITY NAME DEFINITION
-    List<String> entities = List.of(
-            "Zombie", "Creeper", "Rabbit", "Puffer Fish", "Iron Golem", "Frog",
-            "Skeleton", "Blaze", "Phantom", "Enderman", "Slime", "Shulker Box",
-            "Slime", "Shulker box", "Parrot", "Cat", "Sniffer", "Turtle",
-            "Snow Golem", "Wither"
-    );
+    // --- WIDGET LOCATIONS ---
+    private static final WidgetPos DECKCOUNT_LOC = new WidgetPos(174, 186, 276, 196);
+    private static final WidgetPos PATTERN_LOC   = new WidgetPos(173, 203, 224, 215);
+    private static final WidgetPos INFO_LOC      = new WidgetPos(227, 203, 278, 215);
+    private static final WidgetPos TEXTURE_LOC   = new WidgetPos(59, 44, 88, 73);
+    private static final WidgetPos PLUSMINUS_LOC = new WidgetPos(56, 75, 91, 85);
+
+    // --- GRID SETTINGS ---
+    private static final int ROW_SIZE = 6;
+    private static final int X_STEP = 38;
+    private static final int Y_STEP = 46;
+    private static final byte MIN_VAL = 0;
+    private static final byte MAX_VAL = 3;
+
+    // --- MANAGERS ---
+    private final DeckRuleManager ruleManager;
+    private final DeckCardManager deckManager;
+    private final WidgetSelectionManager<String> selectionManager = new WidgetSelectionManager<>("");
 
     public DeckScreen(DeckMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, DECK_TEXTURE, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT, BACKGROUND_ATLAS_WIDTH, BACKGROUND_ATLAS_HEIGHT);
-        this.setTitleConfiguration(true, "Chegg Deck Menu", COLOR_WHITE, 10);
+        super(menu, playerInventory, title, DECK_BG);
+        this.ruleManager = new DeckRuleManager();
+        this.deckManager = new DeckCardManager(ruleManager);
     }
 
     @Override
     protected void init() {
         super.init();
+        this.addNavigationButtons();
+        this.addStatusLabels();
+        this.buildCardGrid();
+    }
 
-        //PLUS NUMBER MINUS - WIDGET
-        int startX = 56;
-        int endX = 91;
-        int startY = 75;
-        int endY = 85;
+    private void addNavigationButtons() {
+        // PATTERN BUTTON
+        this.addRenderableWidget(new GatedNavigationButtonWidget(
+                PATTERN_LOC.left(leftPos), PATTERN_LOC.top(topPos), PATTERN_LOC.width(), PATTERN_LOC.height(),
+                CheggColors.BROWN, CheggColors.GREY, CheggColors.WHITE, CheggColors.PINK,
+                Component.literal("Patterns"), this.selectionManager, this::openPatternScreen
+        ));
 
-        int widgetX = this.leftPos + startX;
-        int widgetY = this.topPos + startY;
-        int widgetWidth = endX - startX;
-        int widgetHeight = endY - startY;
+        // CONFIG BUTTON
+        this.addRenderableWidget(new GatedNavigationButtonWidget(
+                INFO_LOC.left(leftPos), INFO_LOC.top(topPos), INFO_LOC.width(), INFO_LOC.height(),
+                CheggColors.BROWN, CheggColors.GREY, CheggColors.WHITE, CheggColors.PINK,
+                Component.literal("Info"), this.selectionManager,
+                (mob) -> System.out.println("Opening config for: " + mob)
+        ));
+    }
+        //DECK LIMIT
+    private void addStatusLabels() {
+        this.addRenderableWidget(new DynamicLabelWidget(
+                DECKCOUNT_LOC.left(leftPos), DECKCOUNT_LOC.top(topPos), DECKCOUNT_LOC.width(), DECKCOUNT_LOC.height(),
+                this::getDeckStatusText, this::getDeckStatusColor, TextAlignment.CENTER
+        ));
+    }
 
-        byte initialValue = 0;
-        byte minCounter = 0;
-        byte maxCounter = 3;
+    private void buildCardGrid() {
+        List<String> entityNames = CheggCardData.getEntityNameList();
+        Map<String, ResourceLocation> cardResourceMap = CheggCardData.getCardData();
 
-        byte guiSlotRowMax = 6;
-        byte guiSlotColumnMax = 4;
-        byte guiWidgetXStepSize = 38;
-        byte guiWidgetYStepSize = 46;
-        byte guiLastRowSlotAmount = 1;
-        int originalWidgetX = widgetX;
+        for (int i = 0; i < entityNames.size(); i++) {
+            String name = entityNames.get(i);
+            int xOffset = (i % ROW_SIZE) * X_STEP;
+            int yOffset = (i / ROW_SIZE) * Y_STEP;
 
-        for (int i = 0; i < guiSlotColumnMax; i++){
-            if (i == guiSlotColumnMax -1){
-                guiSlotRowMax = guiLastRowSlotAmount;
-            }
-            for(int j = 0; j < guiSlotRowMax; j++){
-                this.addRenderableWidget(new PlusNumMinusBarWidget(
-                        widgetX, widgetY, widgetWidth, widgetHeight,
-                        initialValue, minCounter, maxCounter,
-                        (newValue) -> {
-                            System.out.println("Card count changed to: " + newValue);
-                        }
-                ));
-                widgetX += guiWidgetXStepSize;
-            }
-            widgetY += guiWidgetYStepSize;
-            widgetX = originalWidgetX;
+            // Add the Texture Button
+            this.addRenderableWidget(new ClickableTextureWidget(
+                    TEXTURE_LOC.left(leftPos) + xOffset, TEXTURE_LOC.top(topPos) + yOffset,
+                    TEXTURE_LOC.width(), TEXTURE_LOC.height(),
+                    name, cardResourceMap.get(name), selectionManager));
+
+            // Add the Adjustment Bar
+            this.addRenderableWidget(new PlusNumMinusBarWidget(
+                    PLUSMINUS_LOC.left(leftPos) + xOffset, PLUSMINUS_LOC.top(topPos) + yOffset,
+                    PLUSMINUS_LOC.width(), PLUSMINUS_LOC.height(),
+                    deckManager.getCount(name), MIN_VAL, MAX_VAL,
+                    (val) -> deckManager.updateCount(name, val),
+                    (val) -> deckManager.isUpdateAllowed(name, val)
+            ));
         }
+    }
 
-        //ENTITIY TEXTURE - WIDGET
-        startX = 59;
-        endX = 88;
-        startY = 44;
-        endY = 73;
-        //59 44 - 86 72
-        widgetX = this.leftPos + startX;
-        widgetY = this.topPos + startY;
-        widgetWidth = endX - startX;
-        widgetHeight = endY - startY;
+    // --- UTILITY LOGIC ---
 
-        guiSlotRowMax = 6;
-        guiSlotColumnMax = 4;
-        guiWidgetXStepSize = 38;
-        guiWidgetYStepSize = 46;
-        guiLastRowSlotAmount = 3;
-        originalWidgetX = widgetX;
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        GuiUtil.renderCenteredTitle(graphics, font, DECK_TITLE, textureSettings);
+    }
 
-        this.addRenderableWidget(new ClickableTextureWidget(
-                widgetX, widgetY, widgetWidth, widgetHeight,
-                "Zombie",
-                ResourceLocation.fromNamespaceAndPath(BrassburgChegg.MOD_ID, "textures/gui/cards/zombie.png"
-                ), () -> this.selectedEntity, (newId) -> {
-                        this.selectedEntity = newId;
-                        System.out.println("Selected: " + newId);
-                        }));
+    private String getDeckStatusText() {
+        return "Cur. Deck Size " + deckManager.getTotalCount() + "/" + ruleManager.getMaxDeckSize();
+    }
 
-        startX = 97; //+38
-        endX = 126; //+38
-        startY = 44;
-        endY = 73;
+    private int getDeckStatusColor() {
+        return (deckManager.getTotalCount() >= ruleManager.getMaxDeckSize()) ? CheggColors.RED_DARK : CheggColors.BROWN_DARK;
+    }
 
-        widgetX = this.leftPos + startX;
-        widgetY = this.topPos + startY;
-        widgetWidth = endX - startX;
-        widgetHeight = endY - startY;
-
-        this.addRenderableWidget(new ClickableTextureWidget(
-                widgetX, widgetY, widgetWidth, widgetHeight,
-                "Creeper",
-                ResourceLocation.fromNamespaceAndPath(BrassburgChegg.MOD_ID, "textures/gui/cards/creeper.png"
-                ), () -> this.selectedEntity, (newId) -> {
-            this.selectedEntity = newId;
-            System.out.println("Selected: " + newId);
-        }));
+    private void openPatternScreen(String selectedMob) {
+        if (this.minecraft == null) return;
+        this.minecraft.setScreen(new MobPatternScreen(this.menu, this.minecraft.player.getInventory(), Component.empty(), selectedMob, this));
     }
 }
