@@ -18,9 +18,7 @@ public class DeckRuleManager {
     public byte getMaxCardAmount(){return maxCardAmount;}
     public void setMaxCardAmount(byte newMaximimum){this.maxCardAmount = newMaximimum;}
 
-    public byte getManaCost(String entityName){
 
-    }
     public boolean canAddMore(int currentTotal) {
         return currentTotal < maxDeckSize;
     }
