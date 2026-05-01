@@ -2,8 +2,10 @@ package io.github.mgx01.brassburgchegg.api.gui.widgets;
 
 import io.github.mgx01.brassburgchegg.api.gui.util.TextAlignment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
@@ -26,24 +28,22 @@ public class DynamicLabelWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        var font = Minecraft.getInstance().font;
         String text = textSupplier.get();
+        if (text == null || text.isEmpty()) return;
+
+        drawLabel(graphics, text);
+    }
+
+    private void drawLabel(GuiGraphics graphics, String text) {
+        Font font = Minecraft.getInstance().font;
+        int renderX = alignment.calculateX(font, text, getX(), width);
         int color = colorSupplier.get();
-
-        int textWidth = font.width(text);
-        int renderX = getX();
-
-        switch (alignment) {
-            case CENTER -> renderX = getX() + (width / 2) - (textWidth / 2);
-            case RIGHT  -> renderX = getX() + width - textWidth;
-            case LEFT   -> renderX = getX();
-        }
 
         graphics.drawString(font, text, renderX, getY(), color, false);
     }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narration) {
-        narration.add(net.minecraft.client.gui.narration.NarratedElementType.TITLE, textSupplier.get());
+        narration.add(NarratedElementType.TITLE, textSupplier.get());
     }
 }

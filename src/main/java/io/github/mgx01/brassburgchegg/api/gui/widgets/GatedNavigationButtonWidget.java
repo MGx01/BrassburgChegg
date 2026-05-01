@@ -2,9 +2,12 @@ package io.github.mgx01.brassburgchegg.api.gui.widgets;
 
 import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
 import io.github.mgx01.brassburgchegg.api.gui.managers.WidgetSelectionManager;
+import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -15,50 +18,67 @@ import java.util.function.Consumer;
 public class GatedNavigationButtonWidget extends AbstractWidget {
     private final WidgetSelectionManager<String> selectionManager;
     private final Consumer<String> onPress;
+    private final WidgetColors widgetColors;
 
-    private final int clickableBoxColor;
-    private final int unclickableBoxColor;
-    private final int clickableTextColor;
-    private final int unclickableTextColor;
 
     public GatedNavigationButtonWidget(
             int x, int y, int width, int height,
-            int clickableBoxColor, int unclickableBoxColor, int clickableTextColor, int unclickableTextColor,
+            WidgetColors widgetColors,
             Component message,
             WidgetSelectionManager<String> selectionManager,
             Consumer<String> onPress) {
         super(x, y, width, height, message);
-        this.clickableBoxColor = clickableBoxColor;
-        this.unclickableBoxColor = unclickableBoxColor;
-        this.clickableTextColor = clickableTextColor;
-        this.unclickableTextColor = unclickableTextColor;
+        this.widgetColors = widgetColors;
         this.selectionManager = selectionManager;
         this.onPress = onPress;
     }
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        var font = Minecraft.getInstance().font;
-        
-        String selected = selectionManager.getSelected();
-        boolean hasSelection = selected != null && !selected.isEmpty();
-        
-        int backgroundColor = hasSelection ? clickableBoxColor : unclickableBoxColor;
-        int textColor = hasSelection ? clickableTextColor : unclickableTextColor;
+        boolean active = hasSelection();
 
+        drawBackground(graphics, active);
+        drawText(graphics, active);
+        drawHoverOverlay(graphics, active);
+        handleTooltip(active);
+    }
+
+
+    private boolean hasSelection() {
+        String selected = selectionManager.getSelected();
+        return selected != null && !selected.isEmpty();
+    }
+
+    private void drawBackground(GuiGraphics graphics, boolean active) {
+        int backgroundColor = active ? this.widgetColors.rectangleColor() : this.widgetColors.disabledRectangleColor();
         graphics.fill(getX(), getY(), getX() + width, getY() + height, backgroundColor);
-        graphics.renderOutline(getX(), getY(), width, height, CheggColors.BROWN_DARK);
+        graphics.renderOutline(getX(), getY(), width, height, this.widgetColors.outlineColor());
+    }
+
+    private void drawText(GuiGraphics graphics, boolean active) {
+        Font font = Minecraft.getInstance().font;
+        int textColor = active ? this.widgetColors.textColor() : this.widgetColors.disabledTextColor();
 
         int textX = getX() + (width / 2) - (font.width(getMessage()) / 2);
         int textY = getY() + (height / 2) - 4;
-        graphics.drawString(font, getMessage(), textX, textY, textColor, false);
 
-        if (this.isHoveredOrFocused() && !hasSelection) {
-            setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal("Select a mob first!")));
+        graphics.drawString(font, getMessage(), textX, textY, textColor, false);
+    }
+
+    private void drawHoverOverlay(GuiGraphics graphics, boolean active) {
+        if (this.isHoveredOrFocused() && active) {
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, CheggColors.WHITE_20);
+        }
+    }
+
+    private void handleTooltip(boolean active) {
+        if (this.isHoveredOrFocused() && !active) {
+            setTooltip(Tooltip.create(Component.literal("Select a mob first!")));
         } else {
             setTooltip(null);
         }
     }
+
 
     @Override
     public void onClick(double mouseX, double mouseY) {

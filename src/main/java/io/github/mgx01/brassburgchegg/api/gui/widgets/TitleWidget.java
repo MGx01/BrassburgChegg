@@ -1,7 +1,6 @@
 package io.github.mgx01.brassburgchegg.api.gui.widgets;
 
-import io.github.mgx01.brassburgchegg.api.gui.util.GuiUtil;
-import io.github.mgx01.brassburgchegg.api.gui.util.WidgetPos;
+import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;

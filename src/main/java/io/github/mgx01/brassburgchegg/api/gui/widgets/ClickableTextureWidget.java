@@ -12,25 +12,38 @@ import net.minecraft.resources.ResourceLocation;
 public class ClickableTextureWidget extends AbstractWidget {
     private final String entityId;
     private final ResourceLocation texture;
-    private final WidgetSelectionManager<String> manager;
+    private final WidgetSelectionManager<String> widgetSelectionManager;
 
-    public ClickableTextureWidget(int x, int y, int width, int height, String entityId,
-                                  ResourceLocation texture, WidgetSelectionManager<String> manager) {
+    public ClickableTextureWidget(int x, int y, int width, int height,
+                                  String entityId,
+                                  ResourceLocation texture,
+                                  WidgetSelectionManager<String> widgetSelectionManager) {
         super(x, y, width, height, Component.empty());
         this.entityId = entityId;
         this.texture = texture;
-        this.manager = manager;
+        this.widgetSelectionManager = widgetSelectionManager;
     }
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
+        drawTexture(graphics);
+        drawSelectionOverlay(graphics);
+        drawHoverOverlay(graphics);
+    }
 
-        if (manager.isSelected(entityId)) {
+    private void drawTexture(GuiGraphics graphics) {
+        graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
+    }
+
+    private void drawSelectionOverlay(GuiGraphics graphics) {
+        if (widgetSelectionManager.isSelected(entityId)) {
             graphics.fill(getX(), getY(), getX() + width, getY() + height, CheggColors.WHITE_80);
         }
-        else if (this.isMouseOver(mouseX, mouseY)) {
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, CheggColors.WHITE_20); // ~20% white
+    }
+
+    private void drawHoverOverlay(GuiGraphics graphics) {
+        if (this.isHovered && !widgetSelectionManager.isSelected(entityId)) {
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, CheggColors.WHITE_20);
         }
     }
 
@@ -45,7 +58,7 @@ public class ClickableTextureWidget extends AbstractWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        manager.select(entityId);
+        widgetSelectionManager.select(entityId);
     }
 
     @Override

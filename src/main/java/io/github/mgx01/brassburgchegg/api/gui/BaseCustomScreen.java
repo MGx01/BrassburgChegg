@@ -1,6 +1,6 @@
 package io.github.mgx01.brassburgchegg.api.gui;
 
-import io.github.mgx01.brassburgchegg.api.gui.util.TextureSettings;
+import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TextureSettings;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

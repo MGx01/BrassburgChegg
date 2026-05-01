@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.api.gui.util;
+package io.github.mgx01.brassburgchegg.api.gui.settings.functional;
 
 import net.minecraft.resources.ResourceLocation;
 

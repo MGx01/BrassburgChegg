@@ -5,6 +5,10 @@ import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
 import io.github.mgx01.brassburgchegg.api.gui.managers.DeckCardManager;
 import io.github.mgx01.brassburgchegg.api.gui.managers.DeckRuleManager;
 import io.github.mgx01.brassburgchegg.api.gui.managers.WidgetSelectionManager;
+import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
+import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TextureSettings;
+import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TitleSettings;
+import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import io.github.mgx01.brassburgchegg.api.gui.util.*;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.*;
 import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
@@ -33,12 +37,27 @@ public class DeckScreen extends BaseCustomScreen<DeckMenu> {
     private static final WidgetPos TEXTURE_LOC   = new WidgetPos(59, 44, 88, 73);
     private static final WidgetPos PLUSMINUS_LOC = new WidgetPos(56, 75, 91, 85);
 
+    // --- WIDGET COLORS ---
+    private static final WidgetColors PLUSMINUS_COLORS = WidgetColors.builder()
+            .rectangleColor(CheggColors.BROWN)
+            .outlineColor(CheggColors.BROWN_DARK)
+            .textColor(CheggColors.WHITE)
+            .minusColor(CheggColors.RED_DARK)
+            .plusColor(CheggColors.LIME)
+            .build();
+
+    private static final WidgetColors NAV_BTN_COLORS = WidgetColors.builder()
+            .rectangleColor(CheggColors.BROWN)
+            .disabledRectangleColor(CheggColors.GREY)
+            .textColor(CheggColors.WHITE)
+            .disabledTextColor(CheggColors.PINK)
+            .build();
+
+
     // --- GRID SETTINGS ---
     private static final int ROW_SIZE = 6;
     private static final int X_STEP = 38;
     private static final int Y_STEP = 46;
-    private static final byte MIN_VAL = 0;
-    private static final byte MAX_VAL = 3;
 
     // --- MANAGERS ---
     private final DeckRuleManager ruleManager;
@@ -47,8 +66,8 @@ public class DeckScreen extends BaseCustomScreen<DeckMenu> {
 
     public DeckScreen(DeckMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, DECK_BG);
-        this.ruleManager = new DeckRuleManager();
-        this.deckManager = new DeckCardManager(ruleManager);
+        this.ruleManager = menu.getRuleManager();
+        this.deckManager = menu.getDeckManager();
     }
 
     @Override
@@ -60,18 +79,22 @@ public class DeckScreen extends BaseCustomScreen<DeckMenu> {
     }
 
     private void addNavigationButtons() {
-        // PATTERN BUTTON
+
+
         this.addRenderableWidget(new GatedNavigationButtonWidget(
-                PATTERN_LOC.left(leftPos), PATTERN_LOC.top(topPos), PATTERN_LOC.width(), PATTERN_LOC.height(),
-                CheggColors.BROWN, CheggColors.GREY, CheggColors.WHITE, CheggColors.PINK,
-                Component.literal("Patterns"), this.selectionManager, this::openPatternScreen
+                PATTERN_LOC.left(this.leftPos), PATTERN_LOC.top(this.topPos), PATTERN_LOC.w, PATTERN_LOC.h,
+                NAV_BTN_COLORS,
+                Component.literal("Patterns"),
+                this.selectionManager,
+                this::openPatternScreen
         ));
 
         // CONFIG BUTTON
         this.addRenderableWidget(new GatedNavigationButtonWidget(
-                INFO_LOC.left(leftPos), INFO_LOC.top(topPos), INFO_LOC.width(), INFO_LOC.height(),
-                CheggColors.BROWN, CheggColors.GREY, CheggColors.WHITE, CheggColors.PINK,
-                Component.literal("Info"), this.selectionManager,
+                INFO_LOC.left(this.leftPos), INFO_LOC.top(this.topPos), INFO_LOC.w, INFO_LOC.h,
+                NAV_BTN_COLORS,
+                Component.literal("Info"),
+                this.selectionManager,
                 (mob) -> System.out.println("Opening config for: " + mob)
         ));
     }
@@ -89,22 +112,22 @@ public class DeckScreen extends BaseCustomScreen<DeckMenu> {
 
         for (int i = 0; i < entityNames.size(); i++) {
             String name = entityNames.get(i);
+
             int xOffset = (i % ROW_SIZE) * X_STEP;
             int yOffset = (i / ROW_SIZE) * Y_STEP;
 
-            // Add the Texture Button
+            int textureX = this.leftPos + TEXTURE_LOC.x + xOffset;
+            int textureY = this.topPos + TEXTURE_LOC.y + yOffset;
             this.addRenderableWidget(new ClickableTextureWidget(
-                    TEXTURE_LOC.left(leftPos) + xOffset, TEXTURE_LOC.top(topPos) + yOffset,
-                    TEXTURE_LOC.width(), TEXTURE_LOC.height(),
-                    name, cardResourceMap.get(name), selectionManager));
+                    textureX, textureY, TEXTURE_LOC.w, TEXTURE_LOC.h,
+                    name, cardResourceMap.get(name), selectionManager
+            ));
 
-            // Add the Adjustment Bar
+            int barX = this.leftPos + PLUSMINUS_LOC.x + xOffset;
+            int barY = this.topPos + PLUSMINUS_LOC.y + yOffset;
             this.addRenderableWidget(new PlusNumMinusBarWidget(
-                    PLUSMINUS_LOC.left(leftPos) + xOffset, PLUSMINUS_LOC.top(topPos) + yOffset,
-                    PLUSMINUS_LOC.width(), PLUSMINUS_LOC.height(),
-                    deckManager.getCount(name), MIN_VAL, MAX_VAL,
-                    (val) -> deckManager.updateCount(name, val),
-                    (val) -> deckManager.isUpdateAllowed(name, val)
+                    barX, barY, PLUSMINUS_LOC.w, PLUSMINUS_LOC.h,
+                    PLUSMINUS_COLORS, menu.getDeckManager(), name
             ));
         }
     }
@@ -125,7 +148,19 @@ public class DeckScreen extends BaseCustomScreen<DeckMenu> {
     }
 
     private void openPatternScreen(String selectedMob) {
-        if (this.minecraft == null) return;
-        this.minecraft.setScreen(new MobPatternScreen(this.menu, this.minecraft.player.getInventory(), Component.empty(), selectedMob, this));
+        if (selectedMob == null || selectedMob.isEmpty()) {
+            return;
+        }
+        if (this.minecraft == null || this.minecraft.player == null) {
+            return;
+        }
+        this.minecraft.setScreen(new MobPatternScreen(
+                this.menu,
+                this.minecraft.player.getInventory(),
+                Component.empty(),
+                selectedMob,
+                this
+        ));
     }
+
 }

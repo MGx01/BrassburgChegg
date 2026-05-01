@@ -1,10 +1,15 @@
 package io.github.mgx01.brassburgchegg.api.gui.util;
 
+import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TextureSettings;
+import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TitleSettings;
+import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class GuiUtil {
+
+
     public static void drawCenteredText(GuiGraphics graphics, Font font, Component text, int centerX, int y, int color) {
         int textWidth = font.width(text);
         graphics.drawString(font, text, centerX - (textWidth / 2), y, color, false);
@@ -31,4 +36,5 @@ public class GuiUtil {
         int x = (tex.width() / 2) - (font.width(settings.text()) / 2);
         graphics.drawString(font, settings.text(), x, settings.yOffset(), settings.color(), false);
     }
+
 }
