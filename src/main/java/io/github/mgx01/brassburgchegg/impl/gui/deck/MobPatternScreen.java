@@ -111,9 +111,6 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
 
 
     // --- HELPER ---
-    private String getManaCostLabel(String text){
-        return text + ruleManager.getManaCost(entityName);
-    }
 
 
     // --- DEPENDENCIES ---
