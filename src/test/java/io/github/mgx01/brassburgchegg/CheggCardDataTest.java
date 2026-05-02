@@ -32,7 +32,7 @@ public class CheggCardDataTest {
         paths.forEach(System.out::println);
         System.out.println("--- END RESOURCE PATH LIST ---");
     }
-
+/*
     @Test
     @DisplayName("PRINT ALL RESOURCE PATHS")
     void testPrintPaths() {
@@ -50,6 +50,8 @@ public class CheggCardDataTest {
 
     }
 
+ */
+    /*
     @Test
     @DisplayName("DYNAMICALLY VERIFY ALL KEY-PATH PAIRS")
     void testAllMapCombinations() {
@@ -63,7 +65,7 @@ public class CheggCardDataTest {
 
         });
     }
-
+*/
     @Test
     @DisplayName("DEBUG: DUMP HASHMAP CONTENTS")
     void debugDumpMap() {

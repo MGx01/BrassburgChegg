@@ -1,9 +1,8 @@
-package io.github.mgx01.brassburgchegg.api.gui.managers;
-
+package io.github.mgx01.brassburgchegg.impl.data.rules;
 import io.github.mgx01.brassburgchegg.impl.data.rules.RulesetLoader;
 import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleset;
 
-// The UI's only point of contact. Hides the backend complexity.
+
 public class DeckRuleManager {
 
     private DeckRuleset getActiveRules() {

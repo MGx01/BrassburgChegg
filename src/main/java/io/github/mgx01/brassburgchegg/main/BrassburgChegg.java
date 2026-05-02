@@ -1,5 +1,6 @@
 package io.github.mgx01.brassburgchegg.main;
 
+import io.github.mgx01.brassburgchegg.impl.data.rules.RulesetLoader;
 import io.github.mgx01.brassburgchegg.impl.registry.ModBlock;
 import io.github.mgx01.brassburgchegg.impl.registry.ModCreativeModeTab;
 import io.github.mgx01.brassburgchegg.impl.registry.ModItem;
@@ -36,6 +37,8 @@ public class BrassburgChegg {
         ModCreativeModeTab.register(modEventBus);
         modEventBus.addListener(this::addCreative);
         ModMenu.MENUS.register(modEventBus);
+
+        RulesetLoader.load();
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
