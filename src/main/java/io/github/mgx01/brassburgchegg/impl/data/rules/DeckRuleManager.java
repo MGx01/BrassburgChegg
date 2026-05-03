@@ -1,7 +1,4 @@
 package io.github.mgx01.brassburgchegg.impl.data.rules;
-import io.github.mgx01.brassburgchegg.impl.data.rules.RulesetLoader;
-import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleset;
-
 
 public class DeckRuleManager {
 
@@ -9,20 +6,24 @@ public class DeckRuleManager {
         return RulesetLoader.DEFAULT_RULES;
     }
 
-    public byte getMaxDeckSize() {
+    public int getMaxDeckSize() {
         return getActiveRules().maxDeckSize;
     }
 
-    public byte getMinCardAmount() {
+    public int getMinCardAmount() {
         return getActiveRules().minCardAmount;
     }
 
-    public byte getMaxCardAmount() {
+    public int getMaxCardAmount() {
         return getActiveRules().maxCardAmount;
     }
 
-    public int getManaCost(String entityName) {
-        return getActiveRules().getMana(entityName);
+    public int getSpawnManaCost(String entityName) {
+        return getActiveRules().getSpawnCost(entityName);
+    }
+
+    public int getSpecialManaCost(String entityName) {
+        return getActiveRules().getSpecialCost(entityName);
     }
 
     public boolean canAddMore(int currentTotal) {

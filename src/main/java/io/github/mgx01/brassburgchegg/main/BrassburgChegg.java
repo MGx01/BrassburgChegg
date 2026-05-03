@@ -30,16 +30,12 @@ public class BrassburgChegg {
         modEventBus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
-
+        RulesetLoader.INSTANCE.load();
         ModItem.register(modEventBus);
         ModBlock.BLOCKS.register(modEventBus);
-        //ModBlockEntities.register(modEventBus);
         ModCreativeModeTab.register(modEventBus);
         modEventBus.addListener(this::addCreative);
         ModMenu.MENUS.register(modEventBus);
-
-        RulesetLoader.load();
-
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
@@ -47,7 +43,6 @@ public class BrassburgChegg {
 
     }
 
-    // Add the example block item to the building Blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(ModItem.CHEGG_DECK);
@@ -60,7 +55,6 @@ public class BrassburgChegg {
         }
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 

@@ -1,11 +1,13 @@
 package io.github.mgx01.brassburgchegg.impl.data.rules;
 
+import io.github.mgx01.brassburgchegg.impl.data.CardMana;
+
 import java.util.Map;
 
 public class RulesetJsonFormat {
     public String rulesetId;
-    public byte maxDeckSize;
-    public byte minCardAmount;
-    public byte maxCardAmount;
-    public Map<String, Integer> manaCosts;
+    public int maxDeckSize;
+    public int minCardAmount;
+    public int maxCardAmount;
+    public Map<String, CardMana> manaCosts;
 }

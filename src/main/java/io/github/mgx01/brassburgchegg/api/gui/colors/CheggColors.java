@@ -11,10 +11,10 @@ public final class CheggColors {
     public static final int GREY        = 0xFF444444;
     public static final int PINK        = 0xFFAAAAAA;
     public static final int LIGHT_BROWN = 0xFFC8955E;
-    public static final int DARK_GRAY   = 0x404040;
-    public static final int RED         = 0xFF5555;
-    public static final int BLUE        = 0x5555FF;
-
+    public static final int DARK_GRAY   = 0xFF404040;
+    public static final int RED         = 0xFFFF5555;
+    public static final int BLUE        = 0xFF5555FF;
+    public static final int MANA_BLUE   = 0xFF3146b0;
     //OPACITY COLORS
     public static final int WHITE_80 = 0x80FFFFFF;
     public static final int WHITE_20 = 0x30FFFFFF;

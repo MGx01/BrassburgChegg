@@ -1,5 +1,7 @@
 package io.github.mgx01.brassburgchegg.api.gui.managers;
 
+import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleManager;
+
 import java.util.HashMap;
 import java.util.Map;
 

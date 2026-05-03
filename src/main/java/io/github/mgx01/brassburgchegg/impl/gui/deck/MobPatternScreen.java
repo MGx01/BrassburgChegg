@@ -2,7 +2,7 @@ package io.github.mgx01.brassburgchegg.impl.gui.deck;
 
 import io.github.mgx01.brassburgchegg.api.gui.BaseCustomScreen;
 import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
-import io.github.mgx01.brassburgchegg.api.gui.managers.DeckRuleManager;
+import io.github.mgx01.brassburgchegg.api.gui.managers.DeckCardManager;
 import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
 import io.github.mgx01.brassburgchegg.api.gui.util.GuiUtil;
 import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TextureSettings;
@@ -12,15 +12,13 @@ import io.github.mgx01.brassburgchegg.api.gui.util.TextAlignment;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.BackButtonWidget;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.DynamicLabelWidget;
 import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
+import io.github.mgx01.brassburgchegg.impl.data.CheggCardMana;
+import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleManager;
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
-import java.awt.*;
 
 public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
 
@@ -45,27 +43,32 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
     private static final WidgetPos TEXTURE_LOC   = new WidgetPos(198, 67, 226, 95);
     private static final WidgetPos LABEL_LOC     = new WidgetPos(199, 47, 288, 57);
     private static final WidgetPos SPAWNCOST_LOC = new WidgetPos(237, 68, 288, 78);
-    private static final WidgetPos ATTACKCOST_LOC = new WidgetPos(237, 83, 288, 94);
+    private static final WidgetPos SPECIALCOST_LOC = new WidgetPos(237, 85, 288, 96);
     
     // --- INSTANCE DATA ---
     private final String entityName;
     private final DeckScreen parent;
     private final TitleSettings patternTitle;
-    private final DeckRuleManager ruleManager;
+    private final DeckRuleManager ruleCardManager;
+    private final DeckRuleManager deckRuleManager;
 
     public MobPatternScreen(DeckMenu menu, Inventory inv, Component title, String entityName, DeckScreen parent) {
         super(menu, inv, title, PATTERN_BG);
         this.entityName = entityName;
         this.parent = parent;
-        this.ruleManager = menu.getRuleManager();
+        this.ruleCardManager = menu.getRuleManager();
+        this.deckRuleManager = menu.getRuleManager();
         // REFACTOR MAY BE NECESSARY BECAUSE THIS STINKS
         this.patternTitle = new TitleSettings(true, "Patterns: " + this.entityName, CheggColors.WHITE, 10);
+
     }
 
     @Override
     protected void init() {
         super.init();
         this.addBackButton();
+        this.addSpawnCostLabel();
+        this.addSpecialCostLabel();
     }
 
     @Override
@@ -108,11 +111,33 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
         graphics.drawString(this.font, entityName, x, LABEL_LOC.top(this.topPos), CheggColors.BROWN_DARK, false);
     }
 
+    private void addSpawnCostLabel(){
+        this.addRenderableWidget(new DynamicLabelWidget(
+                SPAWNCOST_LOC.left(this.leftPos), SPAWNCOST_LOC.top(this.topPos), SPAWNCOST_LOC.w, SPAWNCOST_LOC.h,
+                this::getSpawnCostText, this::getManaColor, TextAlignment.CENTER
+        ));
+    }
 
+    private void addSpecialCostLabel(){
+        this.addRenderableWidget(new DynamicLabelWidget(
+                SPECIALCOST_LOC.left(this.leftPos), SPECIALCOST_LOC.top(this.topPos), SPECIALCOST_LOC.w, SPECIALCOST_LOC.h,
+                this::getSpecialCostText, this::getManaColor, TextAlignment.CENTER
+        ));
+    }
 
     // --- HELPER ---
 
+    private String getSpawnCostText() {
+        return "Spawn: " + deckRuleManager.getSpawnManaCost(entityName);
+    }
 
+    private String getSpecialCostText() {
+        return "Special: " + deckRuleManager.getSpecialManaCost(entityName);
+    }
+
+    private int getManaColor(){
+        return CheggColors.MANA_BLUE;
+    }
 
     // --- DEPENDENCIES ---
     @Override

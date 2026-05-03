@@ -1,5 +1,6 @@
 package io.github.mgx01.brassburgchegg.api.gui.widgets;
 
+import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
 import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -29,12 +30,19 @@ public class BackButtonWidget extends AbstractWidget {
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         drawBackground(graphics);
+        drawHoverOverlay(graphics);
         drawButtonText(graphics);
     }
 
     private void drawBackground(GuiGraphics graphics) {
         graphics.fill(getX(), getY(), getX() + width, getY() + height, widgetColors.rectangleColor());
         graphics.renderOutline(getX(), getY(), width, height, widgetColors.outlineColor());
+    }
+
+    private void drawHoverOverlay(GuiGraphics graphics) {
+        if (this.isHoveredOrFocused()) {
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, CheggColors.WHITE_20);
+        }
     }
 
     private void drawButtonText(GuiGraphics graphics) {
