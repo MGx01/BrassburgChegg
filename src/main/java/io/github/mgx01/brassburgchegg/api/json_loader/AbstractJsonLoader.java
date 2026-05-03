@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.api.data;
+package io.github.mgx01.brassburgchegg.api.json_loader;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

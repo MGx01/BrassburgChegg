@@ -1,6 +1,6 @@
 package io.github.mgx01.brassburgchegg.impl.data.rules;
 
-import io.github.mgx01.brassburgchegg.api.data.AbstractJsonLoader;
+import io.github.mgx01.brassburgchegg.api.json_loader.AbstractJsonLoader;
 import io.github.mgx01.brassburgchegg.impl.data.CardMana;
 import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
 
