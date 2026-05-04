@@ -23,6 +23,7 @@ public abstract class AbstractJsonLoader<T> {
         this.formatClass = formatClass;
         this.internalPath = internalPath;
         this.externalPath = FMLPaths.CONFIGDIR.get().resolve(targetFileName);
+        logger.info("!!! THE MOD IS READING THE CONFIG FROM EXACTLY THIS FOLDER: {} !!!", this.externalPath.toAbsolutePath());
     }
 
 
@@ -32,7 +33,7 @@ public abstract class AbstractJsonLoader<T> {
         try {
             T externalData = loadConfigFromFile();
             T internalData = loadInternalDefaults();
-
+            // SYNC EXTERNAL TO BASE JSON - GSON HANDLES DUMB ADMIN BEHAVIOR DONT WORRY
             if (externalData != null && internalData != null) {
                 if (synchronizeWithInternalDefaults(internalData, externalData)) {
                     saveConfigToFile(externalData);

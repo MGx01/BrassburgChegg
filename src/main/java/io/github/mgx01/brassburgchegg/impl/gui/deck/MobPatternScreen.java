@@ -2,7 +2,6 @@ package io.github.mgx01.brassburgchegg.impl.gui.deck;
 
 import io.github.mgx01.brassburgchegg.api.gui.BaseCustomScreen;
 import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
-import io.github.mgx01.brassburgchegg.api.gui.managers.DeckCardManager;
 import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
 import io.github.mgx01.brassburgchegg.api.gui.util.GuiUtil;
 import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TextureSettings;
@@ -11,8 +10,7 @@ import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import io.github.mgx01.brassburgchegg.api.gui.util.TextAlignment;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.BackButtonWidget;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.DynamicLabelWidget;
-import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
-import io.github.mgx01.brassburgchegg.impl.data.CheggCardMana;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CheggCardData;
 import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleManager;
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
 import net.minecraft.client.gui.GuiGraphics;

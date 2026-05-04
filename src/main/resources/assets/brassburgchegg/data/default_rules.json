@@ -4,8 +4,8 @@
   "minCardAmount": 0,
   "maxCardAmount": 3,
   "manaCosts": {
-    "Zombie":       { "spawn": 1, "special": 0 },
-    "Creeper":      { "spawn": 1, "special": 0 },
+    "Zombie":       { "spawn": 3, "special": 0 },
+    "Creeper":      { "spawn": 6, "special": 0 },
     "Pig":          { "spawn": 1, "special": 0 },
     "Rabbit":       { "spawn": 2, "special": 1 },
     "Puffer Fish":  { "spawn": 3, "special": 0 },

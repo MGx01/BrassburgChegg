@@ -1,5 +1,5 @@
 package io.github.mgx01.brassburgchegg;
-import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CheggCardData;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;

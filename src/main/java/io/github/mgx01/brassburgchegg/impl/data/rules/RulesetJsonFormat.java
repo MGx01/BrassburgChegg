@@ -1,6 +1,6 @@
 package io.github.mgx01.brassburgchegg.impl.data.rules;
 
-import io.github.mgx01.brassburgchegg.impl.data.CardMana;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CardMana;
 
 import java.util.Map;
 

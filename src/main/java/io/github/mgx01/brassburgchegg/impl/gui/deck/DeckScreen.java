@@ -10,7 +10,7 @@ import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TitleSettings;
 import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import io.github.mgx01.brassburgchegg.api.gui.util.*;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.*;
-import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CheggCardData;
 import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleManager;
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
 import net.minecraft.client.gui.GuiGraphics;

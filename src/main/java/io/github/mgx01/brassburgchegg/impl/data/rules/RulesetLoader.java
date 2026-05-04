@@ -1,8 +1,8 @@
 package io.github.mgx01.brassburgchegg.impl.data.rules;
 
 import io.github.mgx01.brassburgchegg.api.json_loader.AbstractJsonLoader;
-import io.github.mgx01.brassburgchegg.impl.data.CardMana;
-import io.github.mgx01.brassburgchegg.impl.data.CheggCardData;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CardMana;
+import io.github.mgx01.brassburgchegg.impl.data.card_data.CheggCardData;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class RulesetLoader extends AbstractJsonLoader<RulesetJsonFormat> {
         super(
                 RulesetJsonFormat.class,
                 "/assets/brassburgchegg/data/default_rules.json",
-                "brassburgchegg_entities.json"
+                "entity_configs.json"
         );
     }
 
@@ -43,18 +43,20 @@ public class RulesetLoader extends AbstractJsonLoader<RulesetJsonFormat> {
         DEFAULT_RULES.clear();
         CheggCardData.getCardData().clear();
 
-        DEFAULT_RULES.maxDeckSize = data.maxDeckSize;
         DEFAULT_RULES.minCardAmount = data.minCardAmount;
         DEFAULT_RULES.maxCardAmount = data.maxCardAmount;
+        DEFAULT_RULES.maxDeckSize = data.maxDeckSize;
 
         if (data.manaCosts != null) {
             data.manaCosts.forEach((name, cost) -> {
                 DEFAULT_RULES.setMana(name, cost);
                 CheggCardData.registerCard(name);
+
+                // TRACER BULLET 1:
+                if (name.equals("Zombie")) {
+                    logger.error("TRACER 1 (LOADER): Zombie loaded with Spawn: {} and Special: {}", cost.spawn, cost.special);
+                }
             });
         }
-
-        logger.info("BrassburgChegg: Active ruleset loaded with {} cards.",
-                data.manaCosts != null ? data.manaCosts.size() : 0);
     }
 }

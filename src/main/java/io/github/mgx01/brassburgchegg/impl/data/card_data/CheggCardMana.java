@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.impl.data;
+package io.github.mgx01.brassburgchegg.impl.data.card_data;
 
 import java.util.List;
 

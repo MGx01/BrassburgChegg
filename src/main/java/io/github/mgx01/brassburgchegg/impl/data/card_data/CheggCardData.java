@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.impl.data;
+package io.github.mgx01.brassburgchegg.impl.data.card_data;
 
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
 import net.minecraft.resources.ResourceLocation;
