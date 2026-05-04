@@ -58,8 +58,12 @@ public class PatternParser {
                         pattern.addMove(relX, relZ);
                         pattern.addAttack(relX, relZ);
                         break;
-                    case 'S':
+                    case 'X':
                         pattern.addSpecial(relX, relZ);
+                        break;
+                    case 'S':
+                        pattern.addMove(relX,relZ);
+                        pattern.addSpecial(relX,relZ);
                         break;
                     default:
                         LOGGER.warn("BrassburgChegg: Unknown character '{}' in action_pattern for entity '{}'. Ignoring.", c, entityName);
