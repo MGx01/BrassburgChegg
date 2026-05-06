@@ -19,11 +19,25 @@ Progress
     (might need general access)
 - Deck memory manager created
     importand for screen deck connection
-  
+-JSON loader added to core
+-Defined editable pattern structures and special ability params, editable via json for admins to set default values for the server
+
 
 
 To-do
 - Screen to menu connection API
 - Payload registering
 - cleanup of main mod dir
-- 
+- Arena multiblock
+- Eggter (Chegg scepter item to control the game with)
+      needs to show available Cheggs
+      needs to be able to select available Cheggs
+      needs to be able to perform operations on entities on the board
+      needs to be able to pass turns
+- Chegg Rulebook (still considering)
+      Tweak rules like mana costs, attack/movement/ability patterns and maybe some special ability features and tie these rules to a book
+      on the arena multiblock, you can insert it to set your own rules, if you dislike the default rules
+- Chegg Entity logic needs to be implemented
+      needs to be visibile on the chegg deck gui pattern screen
+          make entities draggable to and set buttons to pattern screen for movement/attack/special
+          set dummy zombie entities and a chegg king so people can test entities on the board freely
