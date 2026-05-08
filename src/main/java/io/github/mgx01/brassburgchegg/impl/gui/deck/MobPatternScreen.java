@@ -63,7 +63,6 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
         this.patternTitle = new TitleSettings(true, "Patterns: " + this.entityName, CheggColors.WHITE, 10);
         java.util.List<String> rawGrid = io.github.mgx01.brassburgchegg.impl.data.pattern.json.ParamLoader.getPattern(this.entityName);
         this.entityPattern = PatternParser.parse(rawGrid, this.entityName);
-
     }
 
     @Override
@@ -72,14 +71,7 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
         this.addBackButton();
         this.addSpawnCostLabel();
         this.addSpecialCostLabel();
-
-        if (this.entityPattern != null) {
-            // Using the exact board top-left coordinates you provided
-            int absoluteBoardX = this.leftPos + 59;
-            int absoluteBoardY = this.topPos + 45;
-
-            this.addRenderableWidget(new DraggablePatternWidget(this.entityPattern, absoluteBoardX, absoluteBoardY));
-        }
+        this.addDraggablePatternWidget();
     }
 
     @Override
@@ -136,6 +128,11 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
         ));
     }
 
+    private void addDraggablePatternWidget(){
+        if (this.entityPattern != null) {
+            this.addRenderableWidget(new DraggablePatternWidget(this.entityPattern, this.leftPos + 59, this.topPos + 45));
+        }
+    }
     // --- HELPER ---
     private String getSpawnCostText() {
         return "Spawn: " + deckRuleManager.getSpawnManaCost(entityName);

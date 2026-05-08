@@ -1,115 +1,146 @@
 package io.github.mgx01.brassburgchegg.api.gui.widgets;
 
 import io.github.mgx01.brassburgchegg.api.gui.colors.BoardColor;
+import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
 import io.github.mgx01.brassburgchegg.impl.data.pattern.parsing.ParsedActionPattern;
 import io.github.mgx01.brassburgchegg.impl.data.pattern.parsing.GridOffset;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-// Extending AbstractWidget gives us hovering, dragging, and clicking for free!
+import java.util.List;
+
 public class DraggablePatternWidget extends AbstractWidget {
     private static final ResourceLocation ATLAS = ResourceLocation.fromNamespaceAndPath("brassburgchegg", "textures/gui/board_textures/board_color_atlas.png");
     private final ParsedActionPattern pattern;
 
-    // Board Data
+    // --- DISPLAY STATES ---
+    public enum DisplayMode {
+        MOVE, ATTACK, SPECIAL
+    }
+    private DisplayMode currentMode = DisplayMode.MOVE;
+
+    // BOARD
     private final int boardX;
     private final int boardY;
     private final int tileSize = 16;
     private final int maxCols = 8;
     private final int maxRows = 10;
-
-    // The dynamic position of our 'O' (Origin) on the grid (0-7, 0-9)
     private int originCol = 3;
-    private int originRow = 4;
-
-    private boolean isDragging = false;
+    private int originRow = 6;
 
     public DraggablePatternWidget(ParsedActionPattern pattern, int boardX, int boardY) {
-        // AbstractWidget needs an x, y, width, and height to know where the mouse is allowed to click
         super(boardX, boardY, 8 * 16, 10 * 16, Component.empty());
         this.pattern = pattern;
         this.boardX = boardX;
         this.boardY = boardY;
     }
 
-    // --- RENDERING ---
-
-    @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (pattern == null || pattern.isEmpty()) return;
-
-        // ORIGIN
-        drawTile(graphics, originCol, originRow, BoardColor.SMITHING_TABLE);
-        // MOVES
-        for (GridOffset move : pattern.getMoves()) {
-            int targetCol = originCol + move.x();
-            int targetRow = originRow + move.z();
-            BoardColor moveColor = isLightTile(targetCol, targetRow) ? BoardColor.LIME : BoardColor.GREEN;
-            drawTile(graphics, targetCol, targetRow, moveColor);
-        }
-
+    public void setDisplayMode(DisplayMode mode) {
+        this.currentMode = mode;
     }
 
-    private boolean isLightTile(int col, int row) {
-        return (col + row) % 2 == 0;
+    // --- RENDERING ---
+    @Override
+    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.renderInteractiveGrid(graphics, mouseX, mouseY);
+    }
+
+    private void renderInteractiveGrid(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (pattern == null || pattern.isEmpty()) return;
+
+        drawTile(graphics, originCol, originRow, BoardColor.SMITHING_TABLE);
+        this.drawActivePattern(graphics);
+
+        if (this.isHoveredOrFocused()) {
+            this.renderHoverHighlight(graphics, mouseX, mouseY);
+        }
+    }
+
+    private void drawActivePattern(GuiGraphics graphics) {
+        for (GridOffset offset : getActiveOffsets()) {
+            int targetCol = originCol + offset.x();
+            int targetRow = originRow + offset.z();
+            drawTile(graphics, targetCol, targetRow, getTileColor(targetCol, targetRow));
+        }
+    }
+
+    private void renderHoverHighlight(GuiGraphics graphics, int mouseX, int mouseY) {
+        int col = (mouseX - this.boardX) / tileSize;
+        int row = (mouseY - this.boardY) / tileSize;
+
+        if (isInsideBoard(col, row) && isValidOffset(col, row, getActiveOffsets())) {
+            int x = getScreenX(col);
+            int y = getScreenY(row);
+
+            graphics.fill(x, y, x + tileSize, y + tileSize, CheggColors.WHITE_20);
+        }
     }
 
     private void drawTile(GuiGraphics graphics, int gridCol, int gridRow, BoardColor color) {
-        if (gridCol < 0 || gridCol >= maxCols || gridRow < 0 || gridRow >= maxRows) {
-            return;
-        }
+        if (!isInsideBoard(gridCol, gridRow)) return;
 
-        int screenX = this.boardX + (gridCol * tileSize);
-        int screenY = this.boardY + (gridRow * tileSize);
-
-        graphics.blit(ATLAS, screenX, screenY, color.u, color.v, 16, 16, 64, 64);
+        graphics.blit(ATLAS,
+                getScreenX(gridCol),
+                getScreenY(gridRow),
+                color.u, color.v, tileSize, tileSize, 64, 64);
     }
 
-    private boolean isValidMove(int targetCol, int targetRow) {
-        // Calculate the distance from the current origin
+    // --- HELPER ---
+    private boolean isValidOffset(int targetCol, int targetRow, List<GridOffset> validList) {
         int relX = targetCol - this.originCol;
         int relZ = targetRow - this.originRow;
 
-        // Loop through the Frog's pattern to see if this offset exists
-        for (GridOffset move : pattern.getMoves()) {
-            if (move.x() == relX && move.z() == relZ) {
+        for (GridOffset offset : validList) {
+            if (offset.x() == relX && offset.z() == relZ) {
                 return true;
             }
         }
         return false;
     }
 
-// --- INTERACTIVITY (CLICK TO MOVE) ---
+    private List<GridOffset> getActiveOffsets() {
+        return switch (currentMode) {
+            case MOVE -> pattern.getMoves();
+            case ATTACK -> pattern.getAttacks();
+            case SPECIAL -> pattern.getSpecials();
+        };
+    }
+
+    private int getScreenX(int col) { return this.boardX + (col * tileSize); }
+    private int getScreenY(int row) { return this.boardY + (row * tileSize); }
+
+    private boolean isInsideBoard(int col, int row) {
+        return col >= 0 && col < maxCols && row >= 0 && row < maxRows;
+    }
+
+    private BoardColor getTileColor(int col, int row) {
+        return switch (currentMode) {
+            case MOVE -> (col + row) % 2 == 0 ? BoardColor.LIME : BoardColor.GREEN;
+            case ATTACK -> BoardColor.RED;
+            case SPECIAL -> BoardColor.MAGENTA;
+        };
+    }
+
+    // --- INTERACTIVITY (CLICK TO MOVE) ---
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!this.isHoveredOrFocused()) return false;
 
-        // Convert raw mouse pixels to grid coordinates
         int clickCol = ((int) mouseX - this.boardX) / tileSize;
         int clickRow = ((int) mouseY - this.boardY) / tileSize;
 
-        // 1. Check if they clicked out of bounds
-        if (clickCol < 0 || clickCol >= maxCols || clickRow < 0 || clickRow >= maxRows) {
-            return false;
-        }
-
-        // 2. Check if the tile they clicked is a valid Green/Lime move
-        if (isValidMove(clickCol, clickRow)) {
-            // Teleport the Frog!
+        if (isValidOffset(clickCol, clickRow, getActiveOffsets())) {
             this.originCol = clickCol;
             this.originRow = clickRow;
             return true;
         }
-
         return false;
     }
 
-    // We override these and return false to disable the old free-dragging behavior
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         return false;
@@ -118,14 +149,6 @@ public class DraggablePatternWidget extends AbstractWidget {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return super.mouseReleased(mouseX, mouseY, button);
-    }
-    private void updateOriginFromMouse(double mouseX, double mouseY) {
-        int hoverCol = ((int) mouseX - this.boardX) / tileSize;
-        int hoverRow = ((int) mouseY - this.boardY) / tileSize;
-
-        // Clamp the values so you can't drag the origin off the board!
-        this.originCol = Math.max(0, Math.min(hoverCol, maxCols - 1));
-        this.originRow = Math.max(0, Math.min(hoverRow, maxRows - 1));
     }
 
     @Override
