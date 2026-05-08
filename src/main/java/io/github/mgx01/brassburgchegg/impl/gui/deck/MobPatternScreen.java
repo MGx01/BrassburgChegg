@@ -1,6 +1,7 @@
 package io.github.mgx01.brassburgchegg.impl.gui.deck;
 
 import io.github.mgx01.brassburgchegg.api.gui.BaseCustomScreen;
+import io.github.mgx01.brassburgchegg.api.gui.colors.BoardColor;
 import io.github.mgx01.brassburgchegg.api.gui.colors.CheggColors;
 import io.github.mgx01.brassburgchegg.api.gui.settings.color.WidgetColors;
 import io.github.mgx01.brassburgchegg.api.gui.util.GuiUtil;
@@ -9,8 +10,11 @@ import io.github.mgx01.brassburgchegg.api.gui.settings.functional.TitleSettings;
 import io.github.mgx01.brassburgchegg.api.gui.settings.positional.WidgetPos;
 import io.github.mgx01.brassburgchegg.api.gui.util.TextAlignment;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.BackButtonWidget;
+import io.github.mgx01.brassburgchegg.api.gui.widgets.DraggablePatternWidget;
 import io.github.mgx01.brassburgchegg.api.gui.widgets.DynamicLabelWidget;
 import io.github.mgx01.brassburgchegg.impl.data.card_data.CheggCardData;
+import io.github.mgx01.brassburgchegg.impl.data.pattern.parsing.ParsedActionPattern;
+import io.github.mgx01.brassburgchegg.impl.data.pattern.parsing.PatternParser;
 import io.github.mgx01.brassburgchegg.impl.data.rules.DeckRuleManager;
 import io.github.mgx01.brassburgchegg.main.BrassburgChegg;
 import net.minecraft.client.gui.GuiGraphics;
@@ -42,22 +46,23 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
     private static final WidgetPos LABEL_LOC     = new WidgetPos(199, 47, 288, 57);
     private static final WidgetPos SPAWNCOST_LOC = new WidgetPos(237, 68, 288, 78);
     private static final WidgetPos SPECIALCOST_LOC = new WidgetPos(237, 85, 288, 96);
-    
+    private static final WidgetPos BOARD_LOC = new WidgetPos(60, 46, 187, 205);
+
     // --- INSTANCE DATA ---
     private final String entityName;
     private final DeckScreen parent;
     private final TitleSettings patternTitle;
-    private final DeckRuleManager ruleCardManager;
     private final DeckRuleManager deckRuleManager;
+    private final ParsedActionPattern entityPattern;
 
     public MobPatternScreen(DeckMenu menu, Inventory inv, Component title, String entityName, DeckScreen parent) {
         super(menu, inv, title, PATTERN_BG);
         this.entityName = entityName;
         this.parent = parent;
-        this.ruleCardManager = menu.getRuleManager();
         this.deckRuleManager = menu.getRuleManager();
-        // REFACTOR MAY BE NECESSARY BECAUSE THIS STINKS
         this.patternTitle = new TitleSettings(true, "Patterns: " + this.entityName, CheggColors.WHITE, 10);
+        java.util.List<String> rawGrid = io.github.mgx01.brassburgchegg.impl.data.pattern.json.ParamLoader.getPattern(this.entityName);
+        this.entityPattern = PatternParser.parse(rawGrid, this.entityName);
 
     }
 
@@ -67,6 +72,14 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
         this.addBackButton();
         this.addSpawnCostLabel();
         this.addSpecialCostLabel();
+
+        if (this.entityPattern != null) {
+            // Using the exact board top-left coordinates you provided
+            int absoluteBoardX = this.leftPos + 59;
+            int absoluteBoardY = this.topPos + 45;
+
+            this.addRenderableWidget(new DraggablePatternWidget(this.entityPattern, absoluteBoardX, absoluteBoardY));
+        }
     }
 
     @Override
@@ -124,7 +137,6 @@ public class MobPatternScreen extends BaseCustomScreen<DeckMenu> {
     }
 
     // --- HELPER ---
-
     private String getSpawnCostText() {
         return "Spawn: " + deckRuleManager.getSpawnManaCost(entityName);
     }

@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.api.pattern_parsing;
+package io.github.mgx01.brassburgchegg.impl.data.pattern.parsing;
 
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;

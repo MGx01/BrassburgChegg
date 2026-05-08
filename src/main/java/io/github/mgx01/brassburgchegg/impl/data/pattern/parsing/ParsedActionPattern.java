@@ -1,4 +1,4 @@
-package io.github.mgx01.brassburgchegg.api.pattern_parsing;
+package io.github.mgx01.brassburgchegg.impl.data.pattern.parsing;
 
 import java.util.ArrayList;
 import java.util.List;

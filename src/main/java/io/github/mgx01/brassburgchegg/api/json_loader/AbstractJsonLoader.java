@@ -23,7 +23,7 @@ public abstract class AbstractJsonLoader<T> {
         this.formatClass = formatClass;
         this.internalPath = internalPath;
         this.externalPath = FMLPaths.CONFIGDIR.get().resolve(targetFileName);
-        logger.info("!!! THE MOD IS READING THE CONFIG FROM EXACTLY THIS FOLDER: {} !!!", this.externalPath.toAbsolutePath());
+        logger.info("!!! CONSTRUCTOR ERROR AT {} !!!", this.externalPath.toAbsolutePath());
     }
 
 
@@ -33,12 +33,14 @@ public abstract class AbstractJsonLoader<T> {
         try {
             T externalData = loadConfigFromFile();
             T internalData = loadInternalDefaults();
-            // SYNC EXTERNAL TO BASE JSON - GSON HANDLES DUMB ADMIN BEHAVIOR DONT WORRY
+
             if (externalData != null && internalData != null) {
                 if (synchronizeWithInternalDefaults(internalData, externalData)) {
                     saveConfigToFile(externalData);
                 }
                 applyToGameMemory(externalData);
+            } else {
+                logger.error("🛑 CRITICAL LOADER FAILURE: externalData or internalData was NULL! Game Memory was NOT populated.");
             }
         } catch (Exception e) {
             logger.error("BrassburgChegg: Error processing JSON config for {}", externalPath.getFileName(), e);

@@ -1,0 +1,401 @@
+{
+  "entities": {
+    "Frog": {
+      "gui_text": {
+        "special_description": "Pulls the target {pull_distance} closer. Special: Pulls directly to the front block."
+      },
+      "logic": {
+        "action_pattern": [
+          "MMM",
+          "MOM",
+          "MMM"
+        ],
+        "special": {
+          "type": "pull_target",
+          "params": {
+            "special_range": 4,
+            "pull_distance": 2
+          }
+        }
+      }
+    },
+
+    "Creeper": {
+      "gui_text": {
+        "special_description": "Destroys itself and all entities in the surrounding blocks."
+      },
+      "logic": {
+        "action_pattern": [
+          "BBB",
+          "BOB",
+          "BBB"
+        ],
+        "special": {
+          "type": "self_destruct",
+          "params": {
+            "friendly_fire": true
+          }
+        }
+      }
+    },
+
+    "Skeleton": {
+      "gui_text": {
+        "special_description": "A deceased longbowmen from the Anglo-French War. You convinced him that your enemy is french"
+      },
+      "logic": {
+        "action_pattern": [
+          "A-----A",
+          "-A---A-",
+          "--AMA--",
+          "--MOM--",
+          "--AMA--",
+          "-A---A-",
+          "A-----A"
+        ]
+      }
+    },
+
+    "Zombie": {
+      "gui_text": {
+        "special_description": "Can only move forward"
+      },
+      "logic": {
+        "directional": true,
+        "action_pattern": [
+          "MBM",
+          "AOA",
+          "-A-"
+        ]
+      }
+    },
+
+    "Pig": {
+      "gui_text": {
+        "special_description": "Draw 1 card upon spawning, and draw 1 additional card upon death."
+      },
+      "logic": {
+        "action_pattern": [
+          "MMM",
+          "MOM",
+          "MMM"
+        ],
+        "special": {
+          "type": "passive_draw",
+          "params": {
+            "on_spawn": 1,
+            "on_death": 1
+          }
+        }
+      }
+    },
+
+    "Rabbit": {
+      "gui_text": {
+        "special_description": "Special: Can hop 2 squares laterally over a mob If it jumps over any mob."
+      },
+      "logic": {
+        "action_pattern": [
+          "--M--",
+          "-----",
+          "M-O-M",
+          "-----",
+          "--M--"
+        ],
+        "special": {
+          "type": "vault",
+          "params": {
+            "draw_on_vault": 1
+          }
+        }
+      }
+    },
+
+    "Puffer_Fish": {
+      "gui_text": {
+        "special_description": "Attacks all 4 surrounding diagonal squares at once. Warning: Friendly-fire applies."
+      },
+      "logic": {
+        "action_pattern": [
+          "AMA",
+          "MOM",
+          "AMA"
+        ],
+        "special": {
+          "type": "aoe_strike",
+          "params": {
+            "friendly_fire": true
+          }
+        }
+      }
+    },
+
+    "Iron_Golem": {
+      "gui_text": {
+        "special_description": "Attacks 3 adjacent tiles in a chosen lateral direction."
+      },
+      "logic": {
+        "action_pattern": [
+          "MMM",
+          "MOM",
+          "MMM"
+        ],
+        "special": {
+          "type": "directional_cleave",
+          "params": {
+            "cleave_width": 3,
+            "friendly_fire": false
+          }
+        }
+      }
+    },
+
+    "Blaze": {
+      "gui_text": {
+        "special_description": "Toasts enemies"
+      },
+      "logic": {
+        "action_pattern": [
+          "--A--",
+          "-MAM-",
+          "AAOAA",
+          "-MAM-",
+          "--A--"
+        ]
+      }
+    },
+
+    "Phantom": {
+      "gui_text": {
+        "special_description": "Its movements are also special attacks"
+      },
+      "logic": {
+        "action_pattern": [
+          "B-B-B",
+          "-B-B-",
+          "B-O-B",
+          "-B-B-",
+          "B-B-B"
+        ]
+      },
+      "special": {
+        "type": "annoying_entity",
+        "params": {
+          "can_dash": false
+        }
+      }
+    },
+
+    "Enderman": {
+      "gui_text": {
+        "special_description": "Uses Special Mana for movement. Special: Swap places with any non-Villager minion laterally."
+      },
+      "logic": {
+        "action_pattern": [
+          "-----",
+          "--M--",
+          "-MOM-",
+          "--M--",
+          "-----"
+        ],
+        "special": {
+          "type": "teleport_swap",
+          "params": {
+            "directions": "lateral",
+            "infinite_range": true,
+            "excluded_target": "Villager",
+            "movement_costs_special_mana": true
+          }
+        }
+      }
+    },
+
+    "Slime": {
+      "gui_text": {
+        "special_description": "Jumps to any green tile. Moving to an occupied tile counts as an attack and costs Spcial-Mana (cannot dash-attack)."
+      },
+      "logic": {
+        "action_pattern": [
+          "B-B-B",
+          "-----",
+          "B-O-B",
+          "-----",
+          "B-B-B"
+        ],
+        "special": {
+          "type": "jump_strike",
+          "params": {
+            "block_dash_action": true
+          }
+        }
+      }
+    },
+
+    "Shulker_Box": {
+      "gui_text": {
+        "special_description": "Static unit. Cannot move freely. When it attacks, it teleports to the target's location. Attack blocked by line-of-sight."
+      },
+      "logic": {
+        "action_pattern": [
+          "-AAA-",
+          "A-A-A",
+          "AAOAA",
+          "A-A-A",
+          "-AAA-"
+        ],
+        "special": {
+          "type": "blink_attack",
+          "params": {
+            "move_on_hit": true,
+            "is_projectile": true
+          }
+        }
+      }
+    },
+
+    "Parrot": {
+      "gui_text": {
+        "special_description": "Highly mobile. Does not have a base attack. Copies the attack pattern of any minion laterally adjacent to it."
+      },
+      "logic": {
+        "action_pattern": [
+          "M-M-M",
+          "-MMM-",
+          "MMOMM",
+          "-MMM-",
+          "M-M-M"
+        ],
+        "special": {
+          "type": "mimic_attack",
+          "params": {
+            "proximity": "lateral",
+            "special_range": 2
+          }
+        }
+      }
+    },
+
+    "Cat": {
+      "gui_text": {
+        "special_description": "Static support. Cannot move or attack. Grants +1 extra Mana at the start of every turn (Stacks)."
+      },
+      "logic": {
+        "action_pattern": [
+          "---",
+          "-O-",
+          "---"
+        ],
+        "special": {
+          "type": "passive_generation",
+          "params": {
+            "mana_generation_per_turn": 1,
+            "can_dash": false
+          }
+        }
+      }
+    },
+
+    "Sniffer": {
+      "gui_text": {
+        "special_description": "Cannot attack. On Spawn: Draw 2 cards from the enemy deck. On Death: Discard 2 minions from your hand or deck."
+      },
+      "logic": {
+        "action_pattern": [
+          "MMM",
+          "MOM",
+          "MMM"
+        ],
+        "special": {
+          "type": "deck_siphon",
+          "params": {
+            "draw_from_enemy_on_spawm": 2,
+            "discard_from_self_at_death": 2
+          }
+        }
+      }
+    },
+
+    "Turtle": {
+      "gui_text": {
+        "special_description": "Special: Grant Invulnerability to self or an adjacent ally until the end of the opponent's next turn."
+      },
+      "logic": {
+        "action_pattern": [
+          "SSS",
+          "SOS",
+          "SSS"
+        ],
+        "special": {
+          "type": "protection_shield",
+          "params": {
+            "charge_movement": true,
+            "can_affects_allies": true,
+            "can_affects_self": true,
+            "block_dash_action": true
+          }
+        }
+      }
+    },
+
+    "Snow_Golem": {
+      "gui_text": {
+        "special_description": "Special: Throw a snowball to root an entity (unable to move) until the end of the opponent's next round."
+      },
+      "logic": {
+        "action_pattern": [
+          "---X---",
+          "--XXX--",
+          "-XXSXX-",
+          "XXSOSXX",
+          "-XXSXX-",
+          "--XXX--",
+          "---X---"
+        ],
+        "special": {
+          "type": "status_effect_bolt",
+          "params": {
+            "effect": "root",
+            "is_projectile": true
+          }
+        }
+      }
+    },
+
+    "Wither": {
+      "gui_text": {
+        "special_description": "Destroy surrounding entities at spawn, shoots projectiles that deal splash damage in a lateral direction"
+      },
+      "logic": {
+        "action_pattern": [
+          "--A--",
+          "--B--",
+          "ABOBA",
+          "--B--",
+          "--A--"
+        ],
+        "splash_pattern": [
+          "-----",
+          "--X--",
+          "-XOX-",
+          "--X--",
+          "-----"
+        ],
+        "spawn_explosion_pattern": [
+          "-----",
+          "-XXX-",
+          "-XOX-",
+          "-XXX-",
+          "-----"
+        ],
+
+        "special": {
+          "spawn_destruction_aura": true,
+          "melee_destruction_aura": true,
+          "is_projectile": true,
+          "has_splash_damage": true,
+          "friendly_fire": true
+        }
+      }
+    }
+  }
+}

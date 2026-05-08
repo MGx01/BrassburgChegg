@@ -1,6 +1,11 @@
 package io.github.mgx01.brassburgchegg.main;
 
+import io.github.mgx01.brassburgchegg.impl.data.pattern.json.ParamLoader;
+import io.github.mgx01.brassburgchegg.impl.data.pattern.json.PatternJsonLoader;
+
+import io.github.mgx01.brassburgchegg.impl.data.pattern.params.MobParams;
 import io.github.mgx01.brassburgchegg.impl.data.rules.RulesetLoader;
+import io.github.mgx01.brassburgchegg.impl.mob_logic.FrogLogic;
 import io.github.mgx01.brassburgchegg.impl.registry.ModBlock;
 import io.github.mgx01.brassburgchegg.impl.registry.ModCreativeModeTab;
 import io.github.mgx01.brassburgchegg.impl.registry.ModItem;
@@ -27,8 +32,15 @@ public class BrassburgChegg {
 
 
     public BrassburgChegg(IEventBus modEventBus, ModContainer modContainer) {
-        modEventBus.addListener(this::commonSetup);
 
+        // LOAD THE JSON INTO MEMORY
+        new PatternJsonLoader().load();
+
+        // TEST LOADING
+        testFrogLoad();
+        testCreeperLoad();
+
+        modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
         RulesetLoader.INSTANCE.load();
         ModItem.register(modEventBus);
@@ -58,5 +70,37 @@ public class BrassburgChegg {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
+    }
+
+    private void testFrogLoad() {
+        LOGGER.info("=========================================");
+        LOGGER.info("🧪 TESTING ULTIMATE FROG LOGIC...");
+
+        try {
+            FrogLogic dummyFrog = new FrogLogic();
+            LOGGER.info("✅ SUCCESS! Frog object created cleanly.");
+            dummyFrog.executeSpecial();
+            dummyFrog.debugPrintPattern();
+
+        } catch (Exception e) {
+            LOGGER.error("❌ TEST FAILED! Something crashed.", e);
+        }
+        LOGGER.info("=========================================");
+    }
+
+    private void testCreeperLoad() {
+        LOGGER.info("=========================================");
+        LOGGER.info("🧪 TESTING CREEPER DATA LOAD");
+
+        try {
+            MobParams.Creeper creeperData = ParamLoader.getParams("Creeper", MobParams.Creeper.class);
+
+            LOGGER.info("SUCCESS! Creeper data loaded seamlessly.");
+            LOGGER.info("Fwendly Faia: {}", creeperData.friendly_fire);
+
+        } catch (Exception e) {
+            LOGGER.error("TEST FAILED! Could not load Frog params.", e);
+        }
+        LOGGER.info("=========================================");
     }
 }
